@@ -1,0 +1,10 @@
+# Server 配置
+server:
+  port: 9090
+
+# ---------------------------------- 配置环境 ---------------------------------
+spring.profiles.active: dev
+
+# ---------------------------------- logback -----------------------------------
+logging:
+  config: classpath:logback-boot.xml

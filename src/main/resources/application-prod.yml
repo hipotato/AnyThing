@@ -1,0 +1,11 @@
+# ---------------------------------- 数据库 ---------------------------------
+db:
+  datasource:
+      driverClassName: org.apache.phoenix.jdbc.PhoenixDriver
+      url: jdbc:phoenix:www-1:2181
+
+
+# ---------------------------------- Mybatis 配置 ---------------------------------
+mybatis:
+   mapper-locations: ["classpath:org/potato/AnyThing/phoenix/dao/generator/mapping/*Mapper.xml", "classpath:org/potato/AnyThing/phoenix/dao/generator/mapping/*Dao.xml"]
+

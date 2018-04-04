@@ -1,0 +1,13 @@
+# ---------------------------------- 数据库 ---------------------------------
+db:
+  datasource:
+      driverClassName: com.mysql.jdbc.Driver
+      type: com.alibaba.druid.pool.DruidDataSource
+      url: jdbc:mysql://192.168.50.168:3306/potato?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
+      username: root
+      password: Iwhere123$
+
+# ---------------------------------- Mybatis 配置 ---------------------------------
+mybatis:
+   mapper-locations: ["classpath:org/potato/AnyThing/phoenix/dao/generator/mapping/*Mapper.xml", "classpath:org/potato/AnyThing/phoenix/dao/generator/mapping/*Dao.xml"]
+
