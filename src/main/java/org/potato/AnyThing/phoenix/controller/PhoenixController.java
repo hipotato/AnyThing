@@ -10,6 +10,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Created by potato on 2018/4/2.
  */
@@ -21,10 +23,8 @@ public class PhoenixController {
     private PhoenixService phoenixService;
 
     @RequestMapping(value = "/getPoi")
-    String getPoi(@Validated GetPoiReq req){
-
-
-        return "hello:"+System.currentTimeMillis();
+    BaseResp getPoi(@Validated GetPoiReq req){
+        return phoenixService.getPoi(req);
     }
     @RequestMapping(value = "/addPoi")
     String addPoi(){

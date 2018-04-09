@@ -24,7 +24,7 @@ import javax.sql.DataSource;
 @Configuration
 @AutoConfigureAfter(DruidConfig.class)
 @EnableConfigurationProperties(MybatisProperties.class)
-@MapperScan(basePackages = {"org.potato.AnyThing.phoenix.dao.generator"})
+@MapperScan(basePackages = {"org.potato.AnyThing.phoenix.dao"})
 public class MybatisConfig {
     /**
      * SqlSessionFactory
