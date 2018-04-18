@@ -11,3 +11,8 @@ db:
 mybatis:
    mapper-locations: ["classpath:org/potato/AnyThing/phoenix/dao/generator/mapping/*Mapper.xml", "classpath:org/potato/AnyThing/phoenix/dao/generator/mapping/*Dao.xml"]
 
+# ---------------------------------- Hbase 配置 ---------------------------------
+hbase:
+  zkHost: pro1,pro2,pro3
+  zkPort: 2181
+  table: EP
