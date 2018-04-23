@@ -1,23 +1,37 @@
 package org.potato.AnyThing.imageMap.util;
 
-import org.potato.AnyThing.imageMap.bo.Point;
+import org.potato.AnyThing.phoenix.config.properties.ImageMapProperties;
+
 
 public class MapTile {
 	int x, y, z;
 
-	MapTile(int x, int y, int zoom) {
+	private ImageMapProperties properties;
+
+	/**
+	 *
+	 * @param x
+	 * @param y
+	 * @param zoom
+	 */
+	MapTile(int x, int y, int zoom,ImageMapProperties imProp) {
         this.x = x;
         this.y = y;
         z = zoom;
+		properties = imProp;
     }
 
-	MapTile(double lat, double lon, int zoom) {
+
+
+
+	MapTile(double lat, double lon, int zoom,ImageMapProperties imProp) {
         if (lat > 90 || lat < -90 || lon > 180 || lon < -180)
             throw new IllegalArgumentException();
         x = (int)(Math.pow(2, zoom)*(lon+180)/360/2);
         y = (int)(-(.5*Math.log((1+Math.sin(Math.toRadians(lat)))/(1-Math.sin(Math.toRadians(lat))))/Math.PI-1)*
                 Math.pow(2, zoom-1)/2);
         z = zoom;
+		properties = imProp;
     }
 
 	public double getStartLon()
@@ -49,34 +63,53 @@ public class MapTile {
 	        lat = lat * 180.0 / Math.PI;
 	    return lat;
 	}
-	
+
     public String tileURL() {
         /**
          * @return full link to tile image from google maps
          */
-//        return "http://khms" + (int)(Math.random()*4) +
-//                ".google.com/kh/v=149&src=app&x=" + x + "&y=" + y + "&z=" + (z-1) + "&s=";
-    	/*
-    	 * lyrs值的意义：
-    	m：路线图  
-    	t：地形图  
-    	p：带标签的地形图  
-    	s：卫星图  
-    	y：带标签的卫星图  
-    	h：标签层（路名、地名等）  
-    	*/
-    	//有标注的
-    	String url = "http://mt3.google.cn/vt/lyrs=m@258000000&hl=zh-CN&gl=CN&src=app"
-    			+ "&x="+x+"&y="+y+"&z="+(z-1)+"&s=Ga";
-    	//无标注的
-    	String url2 = "http://mt2.google.cn/vt/lyrs=s@258000000&hl=zh-CN&gl=CN&src=app"
-    			+ "&x="+x+"&y="+y+"&z="+(z-1)+"&s=Ga";
-    	
-    	//d
-    	String url3 = "http://khms" + (int)(Math.random()*4) +
-                ".google.com/kh/v=149&src=app&x=" + x + "&y=" + y + "&z=" + (z-1) + "&s=";
+        String url =null;
+		Integer lan = properties.getLang();
+		Integer style = properties.getStyle();
 
-    	return url;
+        if(properties.getSource().equals("google")){
+        	/* 谷歌地图
+    	 * lyrs值的意义：
+    	m：路线图
+    	t：地形图
+    	p：带标签的地形图
+    	s：卫星图
+    	y：带标签的卫星图
+    	h：标签层（路名、地名等）
+    	*/
+			//有标注的
+
+			String lyrs = "m";
+			String sLan = "zh-CN";
+			if(style.equals(1)){
+				lyrs ="s";
+			}
+			if(lan.equals(1)){
+				sLan = "en";
+			}
+
+			url = "http://mt3.google.cn/vt/lyrs="+lyrs+"&hl="+sLan+"&gl=CN&src=app"
+					+ "&x="+x+"&y="+y+"&z="+(z-1)+"&s=Ga";
+		}else {
+        	//高德地图
+			//style设置影像和路网，style=6为影像图，style=7为矢量路网，style=8为影像路网
+			String sStyle ="7";
+			if(style.equals(1)){
+				sStyle="6";
+			}
+			String sLan = "zh_cn";
+			if(lan.equals(1)){
+				sLan = "en";
+			}
+			url = "http://wprd01.is.autonavi.com/appmaptile?&x="+x+"&y="+y+"&z="+(z-1)+"&lang="+sLan+"&size=1&scl=1&style="+sStyle;
+		}
+		return  url;
+
     }
 
 }

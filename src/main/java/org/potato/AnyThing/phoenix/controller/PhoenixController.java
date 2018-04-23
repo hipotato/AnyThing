@@ -91,11 +91,11 @@ public class PhoenixController {
     public ResponseEntity<byte[]> test() {
 
         List<MarkInfo> marks = new LinkedList<>();
-        marks.add(new MarkInfo(new Point(39.908675,116.397426),"北京","7:10","E:\\足迹册\\testPic\\tiananmen.jpg"));
-        marks.add(new MarkInfo(new Point(39.275232,116.745292),"北京","8:45","E:\\足迹册\\testPic\\niaochao.jpg"));
-        marks.add( new MarkInfo(new Point(40.000101,116.274944),"北京","9:02","E:\\足迹册\\testPic\\yiheyuan.jpg"));
-        marks.add( new MarkInfo(new Point(40.359745,116.020059),"北京","10:02","E:\\足迹册\\testPic\\yiheyuan.jpg"));
-        marks.add( new MarkInfo(new Point(39.639836,115.589344),"北京","12:02","E:\\足迹册\\testPic\\yiheyuan.jpg"));
+        marks.add(new MarkInfo(new Point(39.908787,116.397372),"北京天安门","7:10","E:\\足迹册\\testPic\\home\\北京天安门.jpg"));
+        marks.add(new MarkInfo(new Point(36.058454,120.320491),"青岛栈桥","8:45","E:\\足迹册\\testPic\\home\\青岛栈桥.jpg"));
+        marks.add( new MarkInfo(new Point(31.240261,121.490577),"上海外滩","9:02","E:\\足迹册\\testPic\\home\\上海外滩.jpg"));
+        marks.add( new MarkInfo(new Point(30.544522,114.302351),"武汉黄鹤楼","10:02","E:\\足迹册\\testPic\\home\\武汉黄鹤楼.jpg"));
+        marks.add( new MarkInfo(new Point(34.259486,108.946971),"西安钟楼","12:02","E:\\足迹册\\testPic\\home\\西安钟楼.jpg"));
 
         ImageMarkMapReq req = new ImageMarkMapReq(2039,2439,marks);
 

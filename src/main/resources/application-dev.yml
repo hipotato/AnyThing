@@ -16,3 +16,13 @@ hbase:
   zkHost: pro1,pro2,pro3
   zkPort: 2181
   table: EP
+
+
+# ---------------------------------- ImageMap 配置 ---------------------------------
+imageMap:
+  #地图类型，google：谷歌地图，amap 高德地图
+  source: amap
+  #地图类型：0：矢量地图，1：影像图
+  style: 0
+  #语言类型 中文 0，英文 1
+  lang: 0

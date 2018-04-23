@@ -207,13 +207,11 @@ public class ImageMarkUtil {
             //绘制time
             g.setColor(timeColor);
             g.setFont(timeFont);
-            g.drawString(time,127,135);
+            g.drawString(time,(358-fmTitle.stringWidth(time))/2,135);
+
             //绘制缩略图
             g.drawImage(imgPic,26, 153,297, 150, null);
-
             g.dispose();
-            FileOutputStream outImgStream = new FileOutputStream("E:\\足迹册\\testPic\\aaa.png");
-            ImageIO.write(bufimg, "png",outImgStream );
             return bufimg;
 
         } catch (IOException e) {

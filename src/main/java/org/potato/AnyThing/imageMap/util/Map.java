@@ -2,7 +2,7 @@ package org.potato.AnyThing.imageMap.util;
 
 
 import org.potato.AnyThing.imageMap.bo.*;
-import org.potato.AnyThing.imageMap.bo.Point;
+import org.potato.AnyThing.phoenix.config.properties.ImageMapProperties;
 import org.potato.AnyThing.phoenix.dto.req.ImageMapReq;
 import org.slf4j.LoggerFactory;
 
@@ -22,27 +22,26 @@ import java.util.concurrent.*;
  * 地图控制类
  */
 public class Map {
+
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Map.class);
     //一个瓦片的像素尺寸，市面上的互联网地图瓦片尺寸目前均为256*256
     private static final int pixelNumOfOneTile = 256;
-    //图片边缘需要留下border
-    private static final int borderPixel = 300;
 	MapTile start, end;
     private int height, width;
     private int imgHeight,imgWidth;
     private double startLat,startLon,endLat,endLon;
+    private ImageMapProperties imProp;
     //ArrayList<String> images;
-    java.util.Map images;
     ArrayList<BufferedImage> imagesList;
     int zoom;
-    public Map(MapTile start, MapTile end, String dest) {
+    public Map(MapTile start, MapTile end, ImageMapProperties imProp) {
         this.start = start;
         this.end = end;
         if (start.x > end.x || start.y > end.y)
             throw new IllegalArgumentException();
         height = end.y - start.y + 1;
         width = end.x - start.x + 1;
-        
+        this.imProp = imProp;
     }
     //谷歌zoom自适应：根据输入的经纬度范围、图片尺寸，自动确定高德瓦片层级
     private int GetAutoZoom(){
@@ -50,8 +49,8 @@ public class Map {
     	int temZoom = 22;
     	for(int i = temZoom;i>4;--i){
     	    //获取经度纬度跨度
-    		mStart = new MapTile(startLat, startLon, i);
-    		mEnd = new MapTile(endLat, endLon, i);
+    		mStart = new MapTile(startLat, startLon, i,imProp);
+    		mEnd = new MapTile(endLat, endLon, i,imProp);
     		int height = mEnd.y - mStart.y + 1;
     	    int width = Math.abs(mEnd.x - mStart.x) + 1;
     	    if(height==1||width==1){
@@ -69,13 +68,13 @@ public class Map {
         this.zoom = GetAutoZoom();
         double centerLng = (this.startLon+this.endLon)/2.0;
         double centerLat = (this.startLat+this.endLat)/2.0;
-        MapTile centerTile= new MapTile(centerLat,centerLng,this.zoom);
-        this.start = new MapTile(centerTile.x-((imgWidth/pixelNumOfOneTile)/2)-1,centerTile.y-((imgHeight/pixelNumOfOneTile)/2)-1,this.zoom);
-        this.end = new MapTile(centerTile.x+((imgWidth/pixelNumOfOneTile)/2)+1,centerTile.y+((imgHeight/pixelNumOfOneTile)/2)+1,this.zoom);
+        MapTile centerTile= new MapTile(centerLat,centerLng,this.zoom,imProp);
+        this.start = new MapTile(centerTile.x-((imgWidth/pixelNumOfOneTile)/2)-1,centerTile.y-((imgHeight/pixelNumOfOneTile)/2)-1,this.zoom,imProp);
+        this.end = new MapTile(centerTile.x+((imgWidth/pixelNumOfOneTile)/2)+1,centerTile.y+((imgHeight/pixelNumOfOneTile)/2)+1,this.zoom,imProp);
     }
     
     public Map(double startLat, double startLon, double endLat,
-               double endLon, int imgHeight,int imgWidth) throws IllegalArgumentException {
+               double endLon, int imgHeight,int imgWidth,ImageMapProperties imProp) throws IllegalArgumentException {
         if (startLat < endLat || startLon > endLon)
             throw new IllegalArgumentException();
         this.startLat = startLat;
@@ -84,16 +83,15 @@ public class Map {
         this.endLat = endLat;
         this.imgHeight = imgHeight;
         this.imgWidth = imgWidth;
-
+        this.imProp = imProp;
         Adjust();
-
         height = end.y - start.y + 1;
         width = end.x - start.x + 1;
     }
        
-    public Map(ImageMapReq req, String dest)
+    public Map(ImageMapReq req, ImageMapProperties imProp)
     {
-    	this(req.getTop(),req.getLeft(),req.getBottom(),req.getRight(),req.getHeight(),req.getWidth());
+    	this(req.getTop(),req.getLeft(),req.getBottom(),req.getRight(),req.getHeight(),req.getWidth(),imProp);
     }
 
 
@@ -118,19 +116,12 @@ public class Map {
                  y = 0;
                  x += image.getWidth();
              }
-             //current.delete();
          }
-
-
-//        marks.add( new MarkInfo(new Point(39.908675,116.397426),"天安门","9:52","E:\\足迹册\\testPic\\tiananmen.jpg"));
-//        marks.add( new MarkInfo(new Point(39.99310,116.396919)," 鸟 巢 ","11:25","E:\\足迹册\\testPic\\niaochao.jpg"));
-//        marks.add( new MarkInfo(new Point(40.000101,116.274944),"颐和园","14:02","E:\\足迹册\\testPic\\yiheyuan.jpg"));
 
         if(!(marks==null||marks.isEmpty())){
             DrawMarks(g,marks);
         }
 
-         //g.drawImage(mark,500,500,null);
          BufferedImage cutImg = CutImage(result);
          ByteArrayOutputStream baos = new ByteArrayOutputStream();
          ImageIO.write( cutImg, "jpg", baos );
@@ -144,7 +135,7 @@ public class Map {
     }
     Integer getMarkOffsetX(MarkInfo mark){
         if(mark.getOffsetX()==null){
-            MapTile tile = new MapTile(mark.getCoord().getLat(),mark.getCoord().getLng(),this.zoom);
+            MapTile tile = new MapTile(mark.getCoord().getLat(),mark.getCoord().getLng(),this.zoom,imProp);
             int xOffset =(int)(pixelNumOfOneTile*(mark.getCoord().getLng()-tile.getStartLon())/(tile.getEndLon()-tile.getStartLon()));
             xOffset+=pixelNumOfOneTile*(tile.x-this.start.x);
             mark.setOffsetX(xOffset);
@@ -153,7 +144,7 @@ public class Map {
     }
     Integer getMarkOffsetY(MarkInfo mark){
         if(mark.getOffsetY()==null){
-            MapTile tile = new MapTile(mark.getCoord().getLat(),mark.getCoord().getLng(),this.zoom);
+            MapTile tile = new MapTile(mark.getCoord().getLat(),mark.getCoord().getLng(),this.zoom,imProp);
             int yOffset =(int)(pixelNumOfOneTile*(mark.getCoord().getLat()-tile.getStartLat())/(tile.getEndLat()-tile.getStartLat()));
             yOffset+=pixelNumOfOneTile*(tile.y-this.start.y);
             mark.setOffsetY(yOffset);
@@ -163,12 +154,11 @@ public class Map {
 
     //绘制mark
     void DrawMarks(Graphics2D graph,List<MarkInfo> marks){
-        Color color = ColorTranfer.toColorFromString("000000");
+        Color color = ColorTranfer.toColorFromString("4169E1");
         //先渲染连接线
-        for( int i = 0 ; i < marks.size()-1 ; i++) {//内部不锁定，效率最高，但在多线程要考虑并发操作的问题。
+        for( int i = 0 ; i < marks.size()-1 ; i++) {
             MarkInfo mark = marks.get(i);
             MarkInfo markNext = marks.get(i+1);
-            Stroke   st   =   graph.getStroke();
             Stroke   bs;
             //LINE_TYPE_DASHED
             bs = new BasicStroke(5,   BasicStroke.CAP_ROUND,
@@ -181,10 +171,8 @@ public class Map {
 
         //再渲染mark
         for(MarkInfo mark:marks){
-
             int xOffset = mark.getOffsetX();
             int yOffset = mark.getOffsetY();
-
             BufferedImage bf = ImageMarkUtil.renderFootNailMark(mark.getTitle(),mark.getTime(),mark.getPicUrl());
             int x = xOffset -ImageMarkUtil.getMarkWidth()/2;
             int y = yOffset -ImageMarkUtil.getMarkHeight()+10;
@@ -217,7 +205,7 @@ public class Map {
     	MapTile tile =null;
     	int temZoom = zoom;
     	while(temZoom>5){
-    		tile= new MapTile(lat,lon,temZoom);
+    		tile= new MapTile(lat,lon,temZoom,imProp);
     		if(isNetFileAvailable(tile.tileURL())){
     			System.out.println("getMaxZoom Lon:"+lon+"Lat:"+lat+ "处的最大zoom："+temZoom);
     			return temZoom;
@@ -267,36 +255,21 @@ public class Map {
 		}
 	}
     
-    //异步下载图片
-    public int bulkDownload2(boolean proxyEnabled)
+    //多线程下载图片
+    public int bulkDownload2()
             throws IOException, InterruptedException {
-        /**
-         * @param proxyEnabled - boolean, uses proxy to download maps if set to true
-         * downloads images of tiles in a given area from west to east from north to south
-         * uses proxy to bypass banning of IP
-         */
-//    	if (proxyEnabled)
-//            Proxy.setProxy();
-        int latCounter = 0;
-        int lonCounter = 0;
-
         imagesList = new ArrayList<>();
         MapTile current;
 
         long total = this.getNumTiles();
         int c = 1;
-
         ArrayList<Future<DownLoadInfo>> futurs = new ArrayList<>();
-          
         System.out.println("Downloading images...");
-        System.out.println("TIME:" +System.currentTimeMillis());
-       
-        //logger.debug("【获取影像图服务】:Downloading images...");
-        //两层循环，开启所有的future，让多个瓦片下载线程同时开启
+        ExecutorService executor = Executors.newCachedThreadPool();
+
         for (int i = start.x; i <= end.x; i++) {
             for (int j = start.y; j <= end.y; j++) {
-                current = new MapTile(i, j, start.z);
-                ExecutorService executor = Executors.newSingleThreadExecutor();
+                current = new MapTile(i, j, start.z,imProp);
                 Future<DownLoadInfo> future = executor.submit(new TimeoutURL2(current.tileURL()));
                 System.out.println("Downloading image " + c + " out of " + total);
                 logger.debug("【获取影像图服务】:Download image {} out of {} started",c,total);
@@ -333,5 +306,4 @@ public class Map {
         logger.debug("【获取影像图服务】:Downloading images all finshed");
         return 0;
     }
-  
 }

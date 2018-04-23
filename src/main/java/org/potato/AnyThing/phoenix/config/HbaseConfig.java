@@ -5,6 +5,7 @@ import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 
 import org.potato.AnyThing.phoenix.config.properties.HbaseProperties;
+import org.potato.AnyThing.phoenix.config.properties.ImageMapProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
