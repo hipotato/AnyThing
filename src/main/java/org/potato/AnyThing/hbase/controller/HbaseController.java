@@ -1,6 +1,8 @@
 package org.potato.AnyThing.hbase.controller;
 
 import org.potato.AnyThing.hbase.service.HbaseService;
+import org.potato.AnyThing.phoenix.config.annotation.ControllerLog;
+import org.potato.AnyThing.phoenix.config.enums.LogType;
 import org.potato.AnyThing.phoenix.config.properties.HbaseProperties;
 import org.potato.AnyThing.phoenix.dto.resp.BaseResp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,8 @@ public class HbaseController {
     @Autowired
     HbaseService hbaseService;
     @RequestMapping(value = "/test")
-    BaseResp test(Integer sourceId,Integer smId){
+    @ControllerLog(operation = "hbase测试接口")
+    public BaseResp test(Integer sourceId,Integer smId){
         return BaseResp.success().map().append("name","potato");
     }
 }

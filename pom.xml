@@ -38,6 +38,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- AOP -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+
 		<!-- Springboot 热部署 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

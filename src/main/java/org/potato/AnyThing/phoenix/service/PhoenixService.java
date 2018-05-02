@@ -14,6 +14,8 @@ public interface PhoenixService {
     BaseResp getPoi(GetPoiReq req);
     Boolean addPoi();
 
-    public NormalPoiResp getPoiByTypeCode(String typecode);
+    NormalPoiResp getPoiByTypeCode(String typecode);
+
+    int about =0;
 
 }

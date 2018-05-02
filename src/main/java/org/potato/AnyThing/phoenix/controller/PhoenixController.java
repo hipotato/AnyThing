@@ -2,6 +2,7 @@ package org.potato.AnyThing.phoenix.controller;
 
 import org.potato.AnyThing.imageMap.bo.MarkInfo;
 import org.potato.AnyThing.imageMap.bo.Point;
+import org.potato.AnyThing.phoenix.config.annotation.ControllerLog;
 import org.potato.AnyThing.phoenix.dao.generator.model.Poiph;
 import org.potato.AnyThing.phoenix.dto.req.GetPoiReq;
 import org.potato.AnyThing.phoenix.dto.req.ImageMapReq;
@@ -60,6 +61,7 @@ public class PhoenixController {
      */
     @RequestMapping(value = "/getImageMap")
     @ResponseBody
+    @ControllerLog(operation = "足迹册后台渲染接口")
     public ResponseEntity<byte[]> getImageMap(@Validated ImageMapReq req) {
         byte[] avatar = imageMapService.getImageMap(req);
 

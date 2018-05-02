@@ -268,5 +268,12 @@ public class BaseResp {
         public Set<Entry<String, Object>> entrySet() {
             return map.entrySet();
         }
+
+        @Override
+        public String toString() {
+            return "BaseRespMap{" +
+                    "map=" + map +
+                    '}';
+        }
     }
 }
